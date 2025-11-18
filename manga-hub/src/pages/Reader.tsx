@@ -62,6 +62,10 @@ export default function Reader() {
 
   if (!chapterId) return null;
 
+  const showExternalNotice = Boolean(
+    currentChapter?.externalUrl && !loading && !pages.length && !error
+  );
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between text-sm text-slate-300">
@@ -89,17 +93,10 @@ export default function Reader() {
           </button>
         </div>
       </div>
-      {currentChapter?.externalUrl && (
-        <div className="text-red-400">
-          This chapter is hosted externally and cannot be read here.{' '}
-          <a
-            href={currentChapter.externalUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="underline text-indigo-300"
-          >
-            Open external link
-          </a>
+      {showExternalNotice && (
+        <div className="rounded border border-yellow-400/40 bg-yellow-400/10 px-3 py-2 text-sm text-yellow-100">
+          This chapter is marked as externally hosted by the source, but no pages were returned yet.
+          Try another chapter or refresh later to keep reading without leaving the site.
         </div>
       )}
       {loading && <div className="text-slate-400">Loading pages…</div>}
