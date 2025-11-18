@@ -76,37 +76,39 @@ export default function SeriesDetail() {
       <h2 className="text-xl font-semibold text-white">Chapters</h2>
       <div className="space-y-2">
         {(() => {
-          const internal = chapters.filter((ch) => !ch.externalUrl);
-          const externalCount = chapters.length - internal.length;
+          const externalCount = chapters.filter((ch) => ch.externalUrl).length;
           return (
             <>
               {externalCount > 0 && (
-                <div className="rounded bg-slate-800 px-3 py-2 text-sm text-slate-300">
-                  {externalCount} chapter(s) are hosted externally and not readable in-app. Look for
-                  entries marked “(External)” in the source.
+                <div className="rounded border border-yellow-400/40 bg-yellow-400/5 px-3 py-2 text-sm text-yellow-100">
+                  {externalCount} chapter{externalCount === 1 ? '' : 's'} were flagged as externally hosted
+                  by MangaDex. We&apos;ll keep you here and try to load any available pages automatically,
+                  but some of them might not have images yet.
                 </div>
               )}
-              {internal.map((ch) => (
+              {chapters.map((ch) => (
                 <Link
                   key={ch.id}
                   to={`/reader/${ch.id}?seriesId=${series.id}`}
                   className="block rounded bg-slate-800 px-3 py-2 hover:bg-slate-700"
                 >
-                  <div className="flex justify-between">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                     <div className="text-white">
                       {ch.number ? `Ch. ${ch.number}` : 'Chapter'} {ch.title && `- ${ch.title}`}
                     </div>
-                    <div className="text-sm text-slate-400">
+                    <div className="flex items-center gap-2 text-sm text-slate-400">
                       {ch.publishedAt ? new Date(ch.publishedAt).toLocaleDateString() : ''}
+                      {ch.externalUrl && (
+                        <span className="rounded bg-yellow-500/20 px-2 py-0.5 text-xs text-yellow-100">
+                          External source
+                        </span>
+                      )}
                     </div>
                   </div>
                 </Link>
               ))}
-              {!internal.length && (
-                <div className="text-slate-400">
-                  No readable chapters available via MangaDex. If some exist externally, follow the
-                  source links on MangaDex directly.
-                </div>
+              {!chapters.length && (
+                <div className="text-slate-400">No chapters were returned for this series yet.</div>
               )}
             </>
           );
